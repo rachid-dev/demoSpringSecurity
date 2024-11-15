@@ -1,0 +1,75 @@
+name: Maven Java CI Pipeline
+
+on:
+  push:
+    branches: 
+      - main
+  pull_request:
+    branches: 
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the code from the repository
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up JDK 17 (you can change this to another version if needed)
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      # Step 3: Cache Maven dependencies for faster builds
+      - name: Cache Maven Dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      # Step 4: Check for dependency vulnerabilities using OWASP Dependency-Check
+      - name: Check for Dependency Vulnerabilities
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+        run: |
+          mvn org.owasp:dependency-check-maven:check -Dnvd.api.key=${NVD_API_KEY}
+
+
+      # Step 5: Run Code Formatter (using Spotless)
+      - name: Run Code Formatter (Spotless)
+        run: |
+          mvn spotless:check
+
+      # Step 6: Run PMD Linter
+      - name: Run PMD Linter
+        run: |
+          mvn pmd:check
+
+      # Step 7: Run Static Analysis with Infer
+      - name: Run Static Analysis with Infer
+        run: |
+          sudo apt-get install -y infer
+          infer run -- mvn compile
+
+    #   # Step 8: Run Unit Tests
+    #   - name: Run Unit Tests
+    #     run: |
+    #       mvn test
+
+      # Step 9: Build the Project (package the code)
+      - name: Build Project
+        run: |
+          mvn clean package
+
+      # Step 10: Upload the build artifact (JAR/WAR file)
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifact
+          path: target/*.jar

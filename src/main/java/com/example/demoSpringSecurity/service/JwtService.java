@@ -3,11 +3,11 @@ package com.example.demoSpringSecurity.service;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
 import org.springframework.security.oauth2.jwt.JwsHeader;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -50,7 +50,9 @@ public class JwtService {
     // for (GrantedAuthority grantedAuthority : authorities.stream().toList()) {
     //   roles.add(grantedAuthority.toString().split("_")[1]);
     // }
-    roles = auth.getAuthorities().stream().map((authority) -> authority.toString().split("_")[1] ).toList();
+    roles = auth.getAuthorities().stream().map(
+      (authority) -> authority.toString().split("_")[1] )
+      .collect(Collectors.toList());
     return roles;
   }
 }

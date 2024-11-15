@@ -46,10 +46,11 @@ public class JwtService {
   private List<String> getAuthorities(Authentication auth) {
 
     List<String> roles = new ArrayList<>();
-    Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
-    for (GrantedAuthority grantedAuthority : authorities.stream().toList()) {
-      roles.add(grantedAuthority.toString().split("_")[1]);
-    }
+    // Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
+    // for (GrantedAuthority grantedAuthority : authorities.stream().toList()) {
+    //   roles.add(grantedAuthority.toString().split("_")[1]);
+    // }
+    roles = auth.getAuthorities().stream().map((authority) -> authority.toString().split("_")[1] ).toList();
     return roles;
   }
 }

@@ -54,7 +54,10 @@ jobs:
       # Step 7: Run Static Analysis with Infer
       - name: Run Static Analysis with Infer
         run: |
-          sudo apt-get install -y infer
+          VERSION=1.2.0; \
+          curl -sSL "https://github.com/facebook/infer/releases/download/v$VERSION/infer-linux64-v$VERSION.tar.xz" \
+          | sudo tar -C /opt -xJ && \
+          sudo ln -s "/opt/infer-linux64-v$VERSION/bin/infer" /usr/local/bin/infer \
           infer run -- mvn compile
 
     #   # Step 8: Run Unit Tests

@@ -65,6 +65,9 @@ jobs:
         run: |
           # mvn clean package
           mvn clean -B package --file pom.xml
+        env: 
+          DATABASE_DEVELOPMENT_URL: ${{secrets.DATABASE_DEVELOPMENT_URL}}
+
 
       # Step 9: Upload the build artifact (JAR/WAR file)
       - name: Upload Build Artifact

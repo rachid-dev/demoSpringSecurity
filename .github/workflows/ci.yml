@@ -4,6 +4,7 @@ on:
   push:
     branches: 
       - main
+      - development
   pull_request:
     branches: 
       - main
@@ -64,9 +65,11 @@ jobs:
       - name: Build Project
         run: |
           # mvn clean package
-          mvn clean -B package --file pom.xml
+          mvn clean -B package -Dspring.profiles.active=${{github.head_ref}} --file pom.xml 
         env: 
           DATABASE_DEVELOPMENT_URL: ${{secrets.DATABASE_DEVELOPMENT_URL}}
+          DATABASE_STAGING_URL: ${{secrets.DATABASE_STAGING_URL}}
+          DATABASE_PRODUCTION_URL: ${{secrets.DATABASE_PRODUCTION_URL}}
 
 
       # Step 9: Upload the build artifact (JAR/WAR file)

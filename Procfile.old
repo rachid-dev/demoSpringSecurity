@@ -1,1 +1,0 @@
-web: java -jar target/demoSpringSecurity-0.0.1-SNAPSHOT.jar

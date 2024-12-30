@@ -5,7 +5,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
@@ -28,7 +27,6 @@ public class JwtService {
 
     JwsHeader jwsHeader = JwsHeader.with(SignatureAlgorithm.RS256).build();
     Instant now = Instant.now();
-    System.out.println(now.toString());
     JwtClaimsSet jwsClaims =
         JwtClaimsSet.builder()
             .claim("authorities", authorities)
@@ -46,13 +44,10 @@ public class JwtService {
   private List<String> getAuthorities(Authentication auth) {
 
     List<String> roles = new ArrayList<>();
-    // Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
-    // for (GrantedAuthority grantedAuthority : authorities.stream().toList()) {
-    //   roles.add(grantedAuthority.toString().split("_")[1]);
-    // }
-    roles = auth.getAuthorities().stream().map(
-      (authority) -> authority.toString().split("_")[1] )
-      .collect(Collectors.toList());
+    roles =
+        auth.getAuthorities().stream()
+            .map((authority) -> authority.toString().split("_")[1])
+            .collect(Collectors.toList());
     return roles;
   }
 }

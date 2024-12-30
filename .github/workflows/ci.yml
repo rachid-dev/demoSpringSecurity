@@ -65,7 +65,7 @@ jobs:
       - name: Build Project
         run: |
           # mvn clean package
-          mvn clean -B package -Dspring.profiles.active=${{github.head_ref}} --file pom.xml 
+          mvn clean -B package -Dspring.profiles.active=prod --file pom.xml 
         env: 
           DATABASE_DEVELOPMENT_URL: ${{secrets.DATABASE_DEVELOPMENT_URL}}
           DATABASE_STAGING_URL: ${{secrets.DATABASE_STAGING_URL}}
